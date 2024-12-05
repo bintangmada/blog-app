@@ -12,7 +12,7 @@
 	<artifactId>blog-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>blog-app</name>
-	<description>Blog app spring boot project</description>
+	<description>Blog app spring boot project - Khusus Backend</description>
 	<url/>
 	<licenses>
 		<license/>
