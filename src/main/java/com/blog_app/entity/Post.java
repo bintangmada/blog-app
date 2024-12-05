@@ -25,6 +25,9 @@ public class Post {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "deleted_status", nullable = false)
+    private Long deletedStatus;
+
     public Long getId() {
         return id;
     }
@@ -55,5 +58,13 @@ public class Post {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Long getDeletedStatus() {
+        return deletedStatus;
+    }
+
+    public void setDeletedStatus(Long deletedStatus) {
+        this.deletedStatus = deletedStatus;
     }
 }
