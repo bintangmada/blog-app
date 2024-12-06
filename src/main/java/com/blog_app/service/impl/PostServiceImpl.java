@@ -3,12 +3,14 @@ package com.blog_app.service.impl;
 import com.blog_app.entity.Post;
 import com.blog_app.exception.ResourceNotFoundException;
 import com.blog_app.payload.PostDto;
+import com.blog_app.payload.PostResponse;
 import com.blog_app.repository.PostRepository;
 import com.blog_app.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,9 +40,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts(int pageNo, int pageSize){
+    public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir){
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())?
+                Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
         // create pageable
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
         // get page
         Page<Post> posts = postRepository.getAllPostsWithPage(pageable);
@@ -48,7 +54,17 @@ public class PostServiceImpl implements PostService {
         // ubah page ke list
         List<Post> listPosts = posts.getContent();
 
-        return listPosts.stream().filter(post -> post.getDeletedStatus() != 1).map(post -> mapToDto(post)).collect(Collectors.toList());
+        List<PostDto> content = listPosts.stream().filter(post -> post.getDeletedStatus() != 1).map(post -> mapToDto(post)).collect(Collectors.toList());
+
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(content);
+        postResponse.setPageNo(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setLast(posts.isLast());
+
+        return postResponse;
     }
 
     // convert entity into dto
