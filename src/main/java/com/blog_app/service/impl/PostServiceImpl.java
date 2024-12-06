@@ -6,6 +6,9 @@ import com.blog_app.payload.PostDto;
 import com.blog_app.repository.PostRepository;
 import com.blog_app.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,9 +38,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts(){
-        List<Post> listPost = postRepository.findAll();
-        return listPost.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
+    public List<PostDto> getAllPosts(int pageNo, int pageSize){
+        // create pageable
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        // get page
+        Page<Post> posts = postRepository.getAllPostsWithPage(pageable);
+
+        // ubah page ke list
+        List<Post> listPosts = posts.getContent();
+
+        return listPosts.stream().filter(post -> post.getDeletedStatus() != 1).map(post -> mapToDto(post)).collect(Collectors.toList());
     }
 
     // convert entity into dto
@@ -83,9 +94,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePostById(Long id){
+        // soft delete
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-        postRepository.delete(post);
+
+        post.setDeletedStatus(1);
+        postRepository.save(post);
     }
 
 }
