@@ -1,5 +1,6 @@
 package com.blog_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,9 +9,6 @@ import lombok.NoArgsConstructor;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "posts", uniqueConstraints = {@UniqueConstraint(columnNames={"title"})})
 public class Post {
@@ -32,6 +30,7 @@ public class Post {
     private int deletedStatus;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     Set<Comment> comments = new HashSet<>();
 
     public Long getId() {
@@ -72,5 +71,13 @@ public class Post {
 
     public void setDeletedStatus(int deletedStatus) {
         this.deletedStatus = deletedStatus;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 }

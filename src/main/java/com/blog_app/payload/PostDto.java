@@ -1,13 +1,19 @@
 package com.blog_app.payload;
 
+import com.blog_app.entity.Comment;
 import lombok.Data;
 
-@Data
+import java.util.HashSet;
+import java.util.Set;
+
 public class PostDto {
     private Long id;
     private String title;
     private String description;
     private String content;
+
+    private int deletedStatus;
+    private Set<Comment> comments;
 
     public Long getId() {
         return id;
@@ -39,5 +45,21 @@ public class PostDto {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public int getDeletedStatus() {
+        return deletedStatus;
+    }
+
+    public void setDeletedStatus(int deletedStatus) {
+        this.deletedStatus = deletedStatus;
     }
 }

@@ -6,6 +6,7 @@ public class CommentDto {
     private String name;
     private String email;
     private String body;
+    private int deletedStatus;
 
     public long getId() {
         return id;
@@ -37,5 +38,13 @@ public class CommentDto {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public int getDeletedStatus() {
+        return deletedStatus;
+    }
+
+    public void setDeletedStatus(int deletedStatus) {
+        this.deletedStatus = deletedStatus;
     }
 }
