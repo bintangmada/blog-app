@@ -24,6 +24,7 @@ public class PostServiceImpl implements PostService {
     public PostServiceImpl(PostRepository postRepository){
         this.postRepository = postRepository;
     }
+
     @Override
     public PostDto createPost(PostDto postDto){
 

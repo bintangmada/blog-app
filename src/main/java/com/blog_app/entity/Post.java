@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +30,9 @@ public class Post {
 
     @Column(name = "deleted_status", nullable = false)
     private int deletedStatus;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<Comment> comments = new HashSet<>();
 
     public Long getId() {
         return id;
