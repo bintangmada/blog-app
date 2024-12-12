@@ -49,20 +49,20 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailService() {
-        UserDetails bintang = User.builder()
-                .username("bintang")
-                .password(passwordEncoder().encode("bintang"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails budi = User.builder()
-                .username("budi")
-                .password(passwordEncoder().encode("budi"))
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(bintang, budi);
-    }
+//    @Bean
+//    public UserDetailsService userDetailService() {
+//        UserDetails bintang = User.builder()
+//                .username("bintang")
+//                .password(passwordEncoder().encode("bintang"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails budi = User.builder()
+//                .username("budi")
+//                .password(passwordEncoder().encode("budi"))
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(bintang, budi);
+//    }
 }
