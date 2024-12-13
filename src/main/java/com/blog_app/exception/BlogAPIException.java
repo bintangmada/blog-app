@@ -5,17 +5,12 @@ import org.springframework.http.HttpStatus;
 public class BlogAPIException extends RuntimeException{
 
     private HttpStatus status;
-    private String messsage;
+    private String message;
 
-    public BlogAPIException(HttpStatus status, String messsage) {
-        this.status = status;
-        this.messsage = messsage;
-    }
-
-    public BlogAPIException(String message, HttpStatus status, String messsage) {
+    public BlogAPIException(HttpStatus status, String message) {
         super(message);
         this.status = status;
-        this.messsage = messsage;
+        this.message = message;
     }
 
     public HttpStatus getStatus() {
@@ -23,6 +18,6 @@ public class BlogAPIException extends RuntimeException{
     }
 
     public String getMesssage() {
-        return messsage;
+        return message;
     }
 }
