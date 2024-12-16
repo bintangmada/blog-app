@@ -17,16 +17,19 @@ public class Category {
 
     private String description;
 
+    private int deletedStatus;
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
     public Category() {
     }
 
-    public Category(Long id, String name, String description) {
+    public Category(Long id, String name, String description, int deletedStatus) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.deletedStatus = deletedStatus;
     }
 
     public Long getId() {
@@ -59,5 +62,13 @@ public class Category {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public int getDeletedStatus() {
+        return deletedStatus;
+    }
+
+    public void setDeletedStatus(int deletedStatus) {
+        this.deletedStatus = deletedStatus;
     }
 }

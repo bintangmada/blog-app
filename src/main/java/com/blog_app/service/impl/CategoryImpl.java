@@ -9,6 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CategoryImpl implements CategoryService {
 
@@ -47,5 +50,43 @@ public class CategoryImpl implements CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
 
         return modelMapper.map(category, CategoryDto.class);
+    }
+
+    @Override
+    public List<CategoryDto> getAllCategories(){
+
+        List<Category> listCategories = categoryRepository.findAll();
+
+        return listCategories.stream().map((category) -> modelMapper.map(category, CategoryDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CategoryDto updateCategory(CategoryDto categoryDto, Long categoryId){
+
+        // cari category by id
+        Category updatedCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+
+        updatedCategory.setName(categoryDto.getName());
+        updatedCategory.setDescription(categoryDto.getDescription());
+
+        Category savedCategory = categoryRepository.save(updatedCategory);
+
+        return modelMapper.map(savedCategory, CategoryDto.class);
+
+    }
+
+    @Override
+    public void deleteCategory(Long categoryId){
+
+        // cari category by id
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+
+        category.setDeletedStatus(1);
+
+        categoryRepository.save(category);
+
     }
 }

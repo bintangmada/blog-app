@@ -5,14 +5,16 @@ public class CategoryDto {
     private Long id;
     private String name;
     private String description;
+    private int deletedStatus;
 
     public CategoryDto() {
     }
 
-    public CategoryDto(Long id, String name, String description) {
+    public CategoryDto(Long id, String name, String description, int deletedStatus) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.deletedStatus = deletedStatus;
     }
 
     public Long getId() {
@@ -37,5 +39,13 @@ public class CategoryDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getDeletedStatus() {
+        return deletedStatus;
+    }
+
+    public void setDeletedStatus(int deletedStatus) {
+        this.deletedStatus = deletedStatus;
     }
 }
