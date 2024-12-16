@@ -17,22 +17,23 @@ public class AuthController {
 
     private AuthService authService;
 
-    public AuthController(AuthService authService){
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
-    @PostMapping(value = {"login", "signin"})
-    public ResponseEntity<JWTAuthResponse> login(@RequestBody LoginDto loginDto){
+    @PostMapping(value = {"login", "sign in"})
+    public ResponseEntity<JWTAuthResponse> login(@RequestBody LoginDto loginDto) {
         String token = authService.login(loginDto);
 
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
         jwtAuthResponse.setAccessToken(token);
-        
+
         return ResponseEntity.ok(jwtAuthResponse);
+
     }
 
-    @PostMapping(value={"signup", "register"})
-    public ResponseEntity<String> registerUser(@RequestBody RegisterDto registerDto){
+    @PostMapping(value = {"signup", "register"})
+    public ResponseEntity<String> registerUser(@RequestBody RegisterDto registerDto) {
         String result = authService.register(registerDto);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
