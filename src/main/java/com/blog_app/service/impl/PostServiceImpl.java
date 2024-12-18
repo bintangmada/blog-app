@@ -1,9 +1,11 @@
 package com.blog_app.service.impl;
 
+import com.blog_app.entity.Category;
 import com.blog_app.entity.Post;
 import com.blog_app.exception.ResourceNotFoundException;
 import com.blog_app.payload.PostDto;
 import com.blog_app.payload.PostResponse;
+import com.blog_app.repository.CategoryRepository;
 import com.blog_app.repository.PostRepository;
 import com.blog_app.service.PostService;
 import org.modelmapper.ModelMapper;
@@ -21,19 +23,28 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
-
     private ModelMapper modelMapper;
+    private CategoryRepository categoryRepository;
 
-    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper){
+
+    public PostServiceImpl(PostRepository postRepository,
+                           ModelMapper modelMapper,
+                           CategoryRepository categoryRepository){
         this.postRepository = postRepository;
         this.modelMapper = modelMapper;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public PostDto createPost(PostDto postDto){
 
+        // get category
+        Category category = categoryRepository.findById(postDto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", postDto.getCategoryId()));
+
         // PostDto to Entity
         Post post = mapToEntity(postDto);
+        post.setCategory(category);
 
         // Save Post
         Post newPost = postRepository.save(post);
@@ -59,7 +70,11 @@ public class PostServiceImpl implements PostService {
         // ubah page ke list
         List<Post> listPosts = posts.getContent();
 
-        List<PostDto> content = listPosts.stream().filter(post -> post.getDeletedStatus() != 1).map(post -> mapToDto(post)).collect(Collectors.toList());
+        List<PostDto> content = listPosts
+                .stream()
+                .filter(post -> post.getDeletedStatus() != 1)
+                .map(post -> mapToDto(post))
+                .collect(Collectors.toList());
 
         PostResponse postResponse = new PostResponse();
         postResponse.setContent(content);
@@ -110,9 +125,13 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
 
+        Category category = categoryRepository.findById(postDto.getCategoryId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Category", "id", postDto.getCategoryId()));
+
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
+        post.setCategory(category);
 
         Post postUpdated = postRepository.save(post);
 
@@ -128,6 +147,23 @@ public class PostServiceImpl implements PostService {
 
         post.setDeletedStatus(1);
         postRepository.save(post);
+    }
+
+    @Override
+    public List<PostDto> getAllPostsByCategoryId(Long categoryId){
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+
+        List<Post> listPosts = category.getPosts();
+
+        List<PostDto> listPostDto = listPosts
+                .stream()
+                .map(post -> {
+                  return modelMapper.map(post, PostDto.class);
+                }).collect(Collectors.toList());
+
+        return listPostDto;
     }
 
 }

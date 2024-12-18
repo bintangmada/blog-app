@@ -1,14 +1,18 @@
 package com.blog_app.service.impl;
 
 import com.blog_app.entity.Category;
+import com.blog_app.entity.Post;
 import com.blog_app.exception.ResourceNotFoundException;
 import com.blog_app.payload.CategoryDto;
+import com.blog_app.payload.PostDto;
 import com.blog_app.repository.CategoryRepository;
+import com.blog_app.repository.PostRepository;
 import com.blog_app.service.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,14 +21,16 @@ public class CategoryImpl implements CategoryService {
 
     private CategoryRepository categoryRepository;
     private ModelMapper modelMapper;
+    private PostRepository postRepository;
 
     public CategoryImpl() {
     }
 
     @Autowired
-    public CategoryImpl(CategoryRepository categoryRepository, ModelMapper modelMapper) {
+    public CategoryImpl(CategoryRepository categoryRepository, ModelMapper modelMapper, PostRepository postRepository) {
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -49,17 +55,65 @@ public class CategoryImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
 
-        return modelMapper.map(category, CategoryDto.class);
+        List<Post> listPost = category.getPosts();
+
+        CategoryDto categoryDto = modelMapper.map(category, CategoryDto.class);
+
+        List<PostDto> listPostDto = listPost
+                .stream()
+                .map(post -> modelMapper.map(post, PostDto.class))
+                .collect(Collectors.toList());
+
+        categoryDto.setListPostDto(listPostDto);
+
+        return categoryDto;
     }
 
+    // get all categories with post
     @Override
     public List<CategoryDto> getAllCategories(){
-
         List<Category> listCategories = categoryRepository.findAll();
+        List<CategoryDto> listCategoryDto = new ArrayList<>();
 
-        return listCategories.stream().map((category) -> modelMapper.map(category, CategoryDto.class))
-                .collect(Collectors.toList());
+        for(Category category : listCategories){
+            CategoryDto categoryDto = modelMapper.map(category, CategoryDto.class);
+            List<PostDto> listPostDto = new ArrayList<>();
+            for(Post post : category.getPosts()){
+                PostDto postDto = modelMapper.map(post, PostDto.class);
+                listPostDto.add(postDto);
+            }
+            categoryDto.setListPostDto(listPostDto);
+            listCategoryDto.add(categoryDto);
+        }
+
+        return listCategoryDto;
     }
+
+//    @Override
+//    public List<CategoryDto> getAllCategories(){
+//
+//        List<Category> listCategory = categoryRepository.findAll();
+//
+//        List<CategoryDto> listCategoryDto = listCategory
+//                .stream()
+//                .map((category) -> {
+//                    CategoryDto categoryDtos = modelMapper.map(category, CategoryDto.class);
+//
+//                    List<PostDto> listPostDto = category
+//                            .getPosts()
+//                            .stream()
+//                            .map(post -> {
+//                                PostDto postDto = modelMapper.map(post, PostDto.class);
+//                                return postDto;
+//                            }).collect(Collectors.toList());
+//
+//                    categoryDtos.setListPostDto(listPostDto);
+//
+//                    return categoryDtos;
+//                }).collect(Collectors.toList());
+//
+//        return listCategoryDto;
+//    }
 
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto, Long categoryId){
@@ -70,6 +124,7 @@ public class CategoryImpl implements CategoryService {
 
         updatedCategory.setName(categoryDto.getName());
         updatedCategory.setDescription(categoryDto.getDescription());
+        updatedCategory.setDeletedStatus(categoryDto.getDeletedStatus());
 
         Category savedCategory = categoryRepository.save(updatedCategory);
 

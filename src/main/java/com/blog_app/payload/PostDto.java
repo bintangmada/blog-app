@@ -26,9 +26,9 @@ public class PostDto {
     // post content should not be null or empty
     @NotEmpty
     private String content;
-
     private int deletedStatus;
     private Set<Comment> comments;
+    private Long categoryId;
 
     public Long getId() {
         return id;
@@ -76,5 +76,13 @@ public class PostDto {
 
     public void setDeletedStatus(int deletedStatus) {
         this.deletedStatus = deletedStatus;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 }
