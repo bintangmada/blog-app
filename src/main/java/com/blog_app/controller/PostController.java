@@ -4,7 +4,10 @@ import com.blog_app.payload.PostDto;
 import com.blog_app.payload.PostResponse;
 import com.blog_app.service.PostService;
 import com.blog_app.utils.AppConstans;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/post")
+@Tag(
+        name = "CRUD Rest APIs for Post Resource"
+)
 public class PostController {
 
     private PostService postService;
@@ -23,6 +29,14 @@ public class PostController {
         this.postService = postService;
     }
 
+    @Operation(
+            summary = "Create Post Rest API",
+            description = "Create Post Rest API is used to save post into database"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Http Status 201 Createdddd"
+    )
     @SecurityRequirement(
             name = "Bear Authentication"
     )
@@ -42,6 +56,14 @@ public class PostController {
         return new ResponseEntity<>(postService.getAllPosts(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Get Post Rest API",
+            description = "Get Post By Id Rest API is used to get post by id"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Http Status 201 OKE"
+    )
     @GetMapping("/getById/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable("id") Long id){
         return ResponseEntity.ok(postService.getPostById(id));

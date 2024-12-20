@@ -2,6 +2,7 @@ package com.blog_app.controller;
 
 import com.blog_app.payload.CategoryDto;
 import com.blog_app.service.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/category")
+@Tag(
+        name = "CRUD Rest APIs for Category Resource"
+)
 public class CategoryController {
 
     private CategoryService categoryService;
