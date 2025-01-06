@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/post/v2")
+//@RequestMapping("/post/v2")
+@RequestMapping("/post")
 @Tag(
         name = "CRUD Rest APIs for Post Resource"
 )

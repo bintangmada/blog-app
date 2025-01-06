@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth/v2")
+//@RequestMapping("/auth/v2")
+@RequestMapping("/auth/")
 @Tag(
         name = "CRUD Rest APIs for Auth Controller"
 )
